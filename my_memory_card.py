@@ -65,3 +65,70 @@ H_line4 = QHBoxLayout()
 H_line5 = QHBoxLayout()
 H_line6 = QHBoxLayout()
 main_v_line = QVBoxLayout()
+H_line4.addWidget(text,alignment=(Qt.AlignHCenter|Qt.AlignVCenter))
+H_line5.addWidget(RadioGroupBox)
+H_line5.addWidget(AnsGroupBox)
+AnsGroupBox.hide()
+H_line6.addWidget(button5)
+main_v_line.addLayout(H_line4)
+main_v_line.addLayout(H_line5)
+main_v_line.addLayout(H_line6)
+win.setLayout(main_v_line)
+
+def show_answer():
+    RadioGroupBox.hide()
+    AnsGroupBox.show()
+    button5.setText('Следующий вопрос')
+def show_question():
+    ButtonGroup.setExclusive(False)
+    button1.setChecked(False)
+    button2.setChecked(False)
+    button3.setChecked(False)
+    button4.setChecked(False)
+    ButtonGroup.setExclusive(True)
+    AnsGroupBox.hide()
+    RadioGroupBox.show()
+    button5.setText('Ответить')
+
+def next_question():
+    win.cur_question += 1
+    if win.cur_question == len(question_list):
+        win.cur_question = 0
+    q = question_list[win.cur_question]
+    ask(q)
+
+
+def test():
+   if button5.text()=='Ответить':
+        check_answer()
+   else:
+        next_question()
+
+answers = [button1, button2, button3, button4]
+
+def ask(q):
+    shuffle(answers)
+    answers[0].setText(q.right_answer)
+    answers[1].setText(q.wrong1)
+    answers[2].setText(q.wrong2)
+    answers[3].setText(q.wrong3)
+    text.setText(q.question)
+    correct.setText(q.right_answer)
+    show_question()
+
+def show_correct(res):
+    result.setText(res)
+    show_answer()
+
+def check_answer():
+    if answers[0].isChecked():
+        show_correct('Поздравляю ты просветлился!')
+    else:
+        show_correct('Не повезло ты не святой!')
+
+
+button5.clicked.connect(test)
+win.cur_question = -1
+next_question()
+win.show()
+app.exec_()
